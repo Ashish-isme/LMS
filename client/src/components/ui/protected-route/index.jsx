@@ -1,4 +1,5 @@
-const { useLocation } = require("react-router-dom");
+import { Fragment } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 
 function RouteGuard({ authenticated, user, element }) {
   const location = useLocation();
@@ -8,18 +9,19 @@ function RouteGuard({ authenticated, user, element }) {
   }
   if (
     authenticated &&
-    user?.role !== "admin" &&
-    (location.pathname.includes("admin") || location.pathname.includes("/auth"))
+    user?.role !== "primaryUser" &&
+    (location.pathname.includes("primaryUser") ||
+      location.pathname.includes("/auth"))
   ) {
     return <Navigate to="/home" />;
   }
 
   if (
     authenticated &&
-    user.role === "admin" &&
-    !location.pathname.includes("admin")
+    user.role === "primaryUser" &&
+    !location.pathname.includes("primaryUser")
   ) {
-    return <Navigate to="/admin" />;
+    return <Navigate to="/primaryUser" />;
   }
   return <Fragment>{element}</Fragment>;
 }
