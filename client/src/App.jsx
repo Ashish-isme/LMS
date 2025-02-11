@@ -5,6 +5,8 @@ import Authpage from "./pages/auth";
 import RouteGuard from "./components/ui/protected-route";
 import { AuthContext } from "./context/auth-context";
 import InstructorDashboardpage from "./pages/auth/primaryUser";
+import StudentViewCommonLayout from "./components/ui/student-view/common-layout";
+import StudentHomePage from "./pages/auth/secondaryUser/home";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -16,7 +18,7 @@ function App() {
         element={
           <RouteGuard
             element={<Authpage />}
-            authenticated={auth?.authenticated}
+            authenticated={auth?.authenticate}
             user={auth?.user}
           />
         }
@@ -27,13 +29,25 @@ function App() {
         element={
           <RouteGuard
             element={<InstructorDashboardpage />}
-            authenticated={auth?.authenticated}
+            authenticated={auth?.authenticate}
             user={auth?.user}
           />
         }
       ></Route>
 
-      <Route path="/" element={<RouteGuard element />}></Route>
+      <Route
+        path="/"
+        element={
+          <RouteGuard
+            element={<StudentViewCommonLayout />}
+            authenticated={auth?.authenticate}
+            user={auth?.user}
+          />
+        }
+      >
+        <Route path="" element={<StudentHomePage />} />
+        <Route path="home" element={<StudentHomePage />} />
+      </Route>
     </Routes>
   );
 }
