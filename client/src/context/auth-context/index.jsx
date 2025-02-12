@@ -9,6 +9,7 @@ export const AuthContext = createContext(null);
 export default function AuthProvider({ children }) {
   const [signInFormData, setSignInFormData] = useState(initialSignInFormData);
   const [signUpFormData, setSignUpFormData] = useState(initialSignUpFormData);
+  // Creating state for Authentication management.
   const [auth, setAuth] = useState({
     authenticate: false,
     user: null,
@@ -74,6 +75,13 @@ export default function AuthProvider({ children }) {
     }
   }
 
+  function resetCredentials() {
+    setAuth({
+      authenticate: false,
+      user: null,
+    });
+  }
+
   useEffect(() => {
     checkAuthUser();
   }, []);
@@ -88,6 +96,7 @@ export default function AuthProvider({ children }) {
         handleRegisterUser,
         handleLoginUser,
         auth,
+        resetCredentials,
       }}
     >
       {loading ? <Skeleton /> : children}
