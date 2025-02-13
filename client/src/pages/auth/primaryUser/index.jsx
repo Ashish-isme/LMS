@@ -1,4 +1,4 @@
-import AdminCoursesApproval from "@/components/ui/admin-view/courses";
+import AdminCourse from "@/components/ui/admin-view/courses";
 import { BarChart, Book, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@radix-ui/react-tabs";
@@ -22,7 +22,7 @@ function InstructorDashboardpage() {
       icon: Book,
       label: "Approve Courses",
       value: "approvecourses",
-      component: <AdminCoursesApproval />,
+      component: <AdminCourse />,
     },
     {
       icon: LogOut,
@@ -47,6 +47,7 @@ function InstructorDashboardpage() {
               <Button
                 className="w-full justify-start mb-2"
                 key={menuItem.value}
+                variant={activeTab === menuItem.value ? "secondary" : "ghost"}
                 onClick={
                   menuItem.value === "logout"
                     ? handleLogout

@@ -1,21 +1,24 @@
-import { SelectContent, SelectTrigger, SelectValue } from "../select";
-import { Label } from "../label";
-import React from "react";
 import { Input } from "../input";
+import { Label } from "../label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../select";
+import { Textarea } from "../textarea";
 
 function FormControls({ formControls = [], formData, setFormData }) {
   function renderComponentByType(getControlItem) {
-    // console.log("renderComponentByType called for:", getControlItem);
     let element = null;
-
     const currentControlItemValue = formData[getControlItem.name] || "";
 
     switch (getControlItem.componentType) {
-      //based on item type such as 'input' or 'select' defining multiple cases
       case "input":
         element = (
           <Input
-            id={getControlItem.name} //CHECK
+            id={getControlItem.name}
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             type={getControlItem.type}
@@ -29,7 +32,6 @@ function FormControls({ formControls = [], formData, setFormData }) {
           />
         );
         break;
-
       case "select":
         element = (
           <Select
@@ -41,12 +43,8 @@ function FormControls({ formControls = [], formData, setFormData }) {
             }
             value={currentControlItemValue}
           >
-            onValueChange ={" "}
-            <SelectTrigger>
-              <SelectValue
-                className="w-full"
-                placeholder={getControlItem.label}
-              />
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
@@ -60,11 +58,10 @@ function FormControls({ formControls = [], formData, setFormData }) {
           </Select>
         );
         break;
-
-      case "Textarea":
+      case "textarea":
         element = (
           <Textarea
-            id={getControlItem.name} //CHECK
+            id={getControlItem.name}
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             value={currentControlItemValue}
@@ -81,7 +78,7 @@ function FormControls({ formControls = [], formData, setFormData }) {
       default:
         element = (
           <Input
-            id={getControlItem.name} //CHECK
+            id={getControlItem.name}
             name={getControlItem.name}
             placeholder={getControlItem.placeholder}
             type={getControlItem.type}
@@ -96,17 +93,16 @@ function FormControls({ formControls = [], formData, setFormData }) {
         );
         break;
     }
+
     return element;
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {formControls.map((controlItem) => (
-        <div key={controlItem.name}>
-          <Label className="text-left" htmlFor={controlItem.name}>
-            {controlItem.label}
-          </Label>
-          {renderComponentByType(controlItem)}
+      {formControls.map((controleItem) => (
+        <div key={controleItem.name}>
+          <Label htmlFor={controleItem.name}>{controleItem.label}</Label>
+          {renderComponentByType(controleItem)}
         </div>
       ))}
     </div>

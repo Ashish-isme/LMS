@@ -1,4 +1,4 @@
-function CourseCreationPage() {
+function StudentAddNewCoursePage() {
   return (
     <div>
       <h1>Welcome to Course Creation</h1>
@@ -6,4 +6,4 @@ function CourseCreationPage() {
   );
 }
 
-export default CourseCreationPage;
+export default StudentAddNewCoursePage;
