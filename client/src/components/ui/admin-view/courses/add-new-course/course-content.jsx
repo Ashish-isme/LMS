@@ -1,7 +1,7 @@
 import FormControls from "@/components/ui/common-form/form-controls";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { courseContentPageFormControls } from "@/config";
-import { AdminContext } from "@/context/auth-context/admin-context";
+import { AdminContext } from "@/context/admin-context";
 import { useContext } from "react";
 
 function CourseContentByAdmin() {

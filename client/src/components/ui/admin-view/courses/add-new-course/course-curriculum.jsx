@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { AdminContext } from "@/context/auth-context/admin-context";
+import { AdminContext } from "@/context/admin-context";
 import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { Input } from "@/components/ui/input";
@@ -33,12 +33,8 @@ function CourseCurriculumByAdmin() {
           {courseCurriculumFormData.map((curriculumItem, index) => (
             <div className="border p-5 rouded-md">
               <div className="flex gap-5 items-center">
-                <h3 className="font-semibold w-20">Lecture {index + 1}</h3>
-                <Input
-                  name="`title-${index + 1}`"
-                  placeholder="Enter the title for the lecture"
-                  className="max-w-96"
-                />
+                <h3 className="font-semibold w-20">Lecture{index + 1}</h3>
+                <Input />
                 <div className="flex item-center space-x-2">
                   <Switch checked={true} id={`freePreview-${index + 1}`} />
 
