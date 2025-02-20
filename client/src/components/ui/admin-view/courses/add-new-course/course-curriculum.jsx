@@ -21,6 +21,18 @@ function CourseCurriculumByAdmin() {
     ]);
   }
 
+  function handleCourseTitleChange(event, currentIndex) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+    console.log(cpyCourseCurriculumFormData, "cpyCourseCurriculumFormData");
+    cpyCourseCurriculumFormData[currentIndex] = {
+      ...cpyCourseCurriculumFormData[currentIndex],
+      title: event.target.value,
+    };
+    console.log(cpyCourseCurriculumFormData, "cpyCourseCurriculumFormData");
+
+    setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+  }
+
   console.log(courseCurriculumFormData);
   return (
     <Card>
@@ -34,7 +46,12 @@ function CourseCurriculumByAdmin() {
             <div className="border p-5 rouded-md">
               <div className="flex gap-5 items-center">
                 <h3 className="font-semibold w-20">Lecture{index + 1}</h3>
-                <Input />
+                <Input
+                  name={`title-${index + 1}`}
+                  placeholder="Enter lecture title"
+                  className="max-w-96"
+                  onChange={(event) => handleCourseTitleChange(event, index)}
+                />
                 <div className="flex item-center space-x-2">
                   <Switch checked={true} id={`freePreview-${index + 1}`} />
 

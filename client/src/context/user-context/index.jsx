@@ -14,6 +14,9 @@ export default function UserProvider({ children }) {
   const [courseCurriculumFormData, setCourseCurriculumFormData] = useState(
     courseCurriculumInitialFormData
   );
+
+  const [mediaUploadProgress, setMediaUploadProgress] = useState(false);
+
   return (
     <UserContext.Provider
       value={{
@@ -21,6 +24,8 @@ export default function UserProvider({ children }) {
         setCourseContentFormData,
         courseCurriculumFormData,
         setCourseCurriculumFormData,
+        mediaUploadProgress,
+        setMediaUploadProgress,
       }}
     >
       {children}

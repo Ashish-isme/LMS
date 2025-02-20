@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
 
+// API Creation
 export async function registerService(formData) {
   const { data } = await axiosInstance.post("/auth/register", {
     //This is known as the request body.
@@ -17,6 +18,12 @@ export async function loginService(formData) {
 
 export async function checkAuthService() {
   const { data } = await axiosInstance.get("/auth/check-auth");
+
+  return data;
+}
+
+export async function mediaUploadService(formData) {
+  const { data } = await axiosInstance.post("/media/upload", formData);
 
   return data;
 }
