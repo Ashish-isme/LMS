@@ -16,6 +16,8 @@ export default function UserProvider({ children }) {
   );
 
   const [mediaUploadProgress, setMediaUploadProgress] = useState(false);
+  const [mediaUploadProgressPercentage, setMediaUploadProgressPercentage] =
+    useState(0);
 
   return (
     <UserContext.Provider
@@ -26,6 +28,8 @@ export default function UserProvider({ children }) {
         setCourseCurriculumFormData,
         mediaUploadProgress,
         setMediaUploadProgress,
+        mediaUploadProgressPercentage,
+        setMediaUploadProgressPercentage,
       }}
     >
       {children}

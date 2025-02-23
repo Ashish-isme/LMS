@@ -7,6 +7,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { courseContentInitialFormData } from "@/config";
 import { mediaUploadService } from "@/services";
+import MediaProgressbar from "@/components/media-progress-bar";
+import VideoPlayer from "@/components/video-player";
 
 function CourseCurriculumByUser() {
   const {
@@ -14,6 +16,8 @@ function CourseCurriculumByUser() {
     setCourseCurriculumFormData,
     mediaUploadProgress,
     setMediaUploadProgress,
+    mediaUploadProgressPercentage,
+    setMediaUploadProgressPercentage,
   } = useContext(UserContext);
 
   function handleNewLecture() {
@@ -57,8 +61,20 @@ function CourseCurriculumByUser() {
 
       try {
         setMediaUploadProgress(true);
-        const response = await mediaUploadService(videoFormData);
-        console.log(response, "response");
+        const response = await mediaUploadService(
+          videoFormData,
+          setMediaUploadProgressPercentage
+        );
+        if (response.success) {
+          let updatedCourseCurriculumFormData = [...courseCurriculumFormData];
+          updatedCourseCurriculumFormData[currentIndex] = {
+            ...updatedCourseCurriculumFormData[currentIndex],
+            videoUrl: response?.data?.url,
+            public_id: response?.data?.public_id,
+          };
+          setCourseCurriculumFormData(updatedCourseCurriculumFormData);
+          setMediaUploadProgress(false);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -71,6 +87,12 @@ function CourseCurriculumByUser() {
       </CardHeader>
       <CardContent>
         <Button onClick={handleNewLecture}>Add Video</Button>
+        {mediaUploadProgress ? (
+          <MediaProgressbar
+            isMediaUploading={mediaUploadProgress}
+            progress={mediaUploadProgressPercentage}
+          />
+        ) : null}
         <div className="mt-4 space-y-4 ">
           {courseCurriculumFormData.map((curriculumItem, index) => (
             <div className="border p-4 rouded-md">
@@ -98,12 +120,26 @@ function CourseCurriculumByUser() {
                 </div>
               </div>
               <div className="mt-6">
-                <Input
-                  type="file"
-                  accept="video/*"
-                  onChange={(event) => handleSingleLectureUpload(event, index)}
-                  className="mb-4"
-                />
+                {courseCurriculumFormData[index]?.videoUrl ? (
+                  <div className="flex gap-3">
+                    <VideoPlayer
+                      url={courseCurriculumFormData[index]?.videoUrl}
+                      width="450px"
+                      height="200px"
+                    />
+                    <Button>Replace Video</Button>
+                    <Button className="bg-red-700">Delete Lecture</Button>
+                  </div>
+                ) : (
+                  <Input
+                    type="file"
+                    accept="video/*"
+                    onChange={(event) =>
+                      handleSingleLectureUpload(event, index)
+                    }
+                    className="mb-4"
+                  />
+                )}
               </div>
             </div>
           ))}

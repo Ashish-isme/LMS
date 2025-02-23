@@ -161,6 +161,7 @@ export const courseContentInitialFormData = {
   pricing: "",
   objectives: "",
   welcomeMessage: "",
+  image: "",
 };
 
 export const courseCurriculumInitialFormData = [
