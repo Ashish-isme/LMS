@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { courseContentInitialFormData } from "@/config";
-import { mediaUploadService } from "@/services";
+import { mediaUploadService, mediaDeleteService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
 import VideoPlayer from "@/components/video-player";
 
@@ -80,13 +80,56 @@ function CourseCurriculumByUser() {
       }
     }
   }
+
+  async function handleReplaceVideo(currentIndex) {
+    let updatedCourseCurriculumFormData = [...courseCurriculumFormData];
+    const getCurrentVideoPublicId =
+      updatedCourseCurriculumFormData[currentIndex].public_id;
+
+    const deleteCurrentMediaResponse = await mediaDeleteService(
+      getCurrentVideoPublicId
+    );
+
+    console.log(deleteCurrentMediaResponse, "Delete Current Media Response");
+
+    if (deleteCurrentMediaResponse?.success) {
+      updatedCourseCurriculumFormData[currentIndex] = {
+        ...updatedCourseCurriculumFormData[currentIndex],
+        videoUrl: "",
+        public_id: "",
+      };
+      setCourseCurriculumFormData(updatedCourseCurriculumFormData);
+    }
+  }
+
+  // for addition of new video
+  function isCourseCurriculumFormDataValid() {
+    return courseCurriculumFormData.every((item) => {
+      return (
+        item &&
+        typeof item === "object" &&
+        typeof item.title === "string" &&
+        item.title.trim() !== "" &&
+        typeof item.videoUrl === "string" &&
+        item.videoUrl.trim() !== ""
+      );
+    });
+  }
+
+  console.log(courseCurriculumFormData);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Create Course Curriculum</CardTitle>
       </CardHeader>
       <CardContent>
-        <Button onClick={handleNewLecture}>Add Video</Button>
+        <Button
+          disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress}
+          onClick={handleNewLecture}
+        >
+          Add Video
+        </Button>
         {mediaUploadProgress ? (
           <MediaProgressbar
             isMediaUploading={mediaUploadProgress}
@@ -127,7 +170,9 @@ function CourseCurriculumByUser() {
                       width="450px"
                       height="200px"
                     />
-                    <Button>Replace Video</Button>
+                    <Button onClick={() => handleReplaceVideo(index)}>
+                      Replace Video
+                    </Button>
                     <Button className="bg-red-700">Delete Lecture</Button>
                   </div>
                 ) : (

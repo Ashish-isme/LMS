@@ -31,25 +31,25 @@ function VideoPlayer({ width = "100%", height = "100%", url }) {
     setPlaying(!playing);
   }
 
-  function handleProgress() {}
+  //Dont have to use this for now (for cutomized only) .
+  // function handleProgress() {}
 
-  function handleRewind() {}
+  // function handleRewind() {}
 
-  function handleForward() {}
+  // function handleForward() {}
 
-  function handleToggleMute() {}
+  // function handleToggleMute() {}
 
-  function handleSeekChange() {}
+  // function handleSeekChange() {}
 
-  function handleSeekMouseUp() {}
+  // function handleSeekMouseUp() {}
 
   return (
     // display the video content
     <div
       ref={playerContainerRef}
-      className={`realtive bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition-all duration-300 ease-in-out
-   ${isFullScreen ? "w-screen h-screen" : ""}
-    `}
+      className={`relative bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition-all duration-300 ease-in-out
+  ${isFullScreen ? "w-screen h-screen" : ""}`}
       style={{ width, height }}
     >
       <ReactPlayer
@@ -61,9 +61,9 @@ function VideoPlayer({ width = "100%", height = "100%", url }) {
         playing={playing}
         volume={volume}
         muted={muted}
-        onProgress={handleProgress}
+        controls // used Controls for React for all interaction with the video
       />
-      {showControls && (
+      {/* {showControls && (
         <div
           className={`absolute bottom-0 left-0 right-0 bg-gray-800 bg-opacity-75 p-4 transition-opacity duration-300 ${
             showControls ? "opacity-100" : "opacity-0"
@@ -122,7 +122,7 @@ function VideoPlayer({ width = "100%", height = "100%", url }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
