@@ -13,8 +13,10 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-function AdminCourses() {
+function AdminCourses({ listOfCourses }) {
   const navigate = useNavigate();
+  console.log("List of Courses:", listOfCourses);
+
   return (
     <Card>
       <CardHeader className="flex justify-between flex-row items-center">
@@ -45,21 +47,33 @@ function AdminCourses() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">
-                  MERN Stack Tutorial
-                </TableCell>
-                <TableCell>15</TableCell>
-                <TableCell>255</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    size="sm"
-                    className=" p-2 bg-red-500 text-white hover:bg-red-600"
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {listOfCourses && listOfCourses.length > 0
+                ? listOfCourses.map((course) => (
+                    <TableRow>
+                      <TableCell className="font-medium">
+                        {course?.title}
+                      </TableCell>
+                      <TableCell>{course?.students?.length}</TableCell>
+                      <TableCell>
+                        ${course?.students?.length * course?.pricing}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          className=" p-2 bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                          Review
+                        </Button>
+                        <Button
+                          size="sm"
+                          className=" p-2 bg-green-500 text-white hover:bg-green-600 ml-2"
+                        >
+                          Approve
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : null}
             </TableBody>
           </Table>
         </div>

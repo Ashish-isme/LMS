@@ -1,15 +1,30 @@
-import AdminCourse from "@/components/ui/admin-view/courses";
+import AdminCourses from "@/components/ui/admin-view/courses";
 import { BarChart, Book, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@radix-ui/react-tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import AdminDashboard from "@/components/ui/admin-view/dashboard";
 import { AuthContext } from "@/context/auth-context";
+import { UserContext } from "@/context/user-context";
+import { fetchUserCourseListService } from "@/services";
 
 function InstructorDashboardpage() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const { resetCredentials } = useContext(AuthContext);
+  const { userCoursesList, setUserCoursesList } = useContext(UserContext);
+
+  async function fetchAllCourses() {
+    const response = await fetchUserCourseListService();
+
+    console.log(response, "Response of Course List");
+
+    if (response?.success) setUserCoursesList(response?.data);
+  }
+
+  useEffect(() => {
+    fetchAllCourses();
+  }, []);
 
   const menuItem = [
     {
@@ -22,7 +37,7 @@ function InstructorDashboardpage() {
       icon: Book,
       label: "Approve Courses",
       value: "approvecourses",
-      component: <AdminCourse />,
+      component: <AdminCourses listOfCourses={userCoursesList} />, // Pass the course list form the state which is got by the fetchCourseList Funciton
     },
     {
       icon: LogOut,

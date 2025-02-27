@@ -30,6 +30,11 @@ const CourseSchema = new mongoose.Schema({
   ],
   curriculum: [LectureSchema],
   isPublished: Boolean,
+
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+  },
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

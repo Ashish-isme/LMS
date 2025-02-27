@@ -12,6 +12,7 @@ import {
   courseContentInitialFormData,
   courseCurriculumInitialFormData,
 } from "@/config";
+import { useNavigate } from "react-router-dom";
 
 function StudentAddNewCoursePage() {
   const {
@@ -21,6 +22,7 @@ function StudentAddNewCoursePage() {
     setCourseCurriculumFormData,
   } = useContext(UserContext);
   const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   function isEmpty(value) {
     if (Array.isArray(value)) {
@@ -63,6 +65,7 @@ function StudentAddNewCoursePage() {
       students: [],
       curriculum: courseCurriculumFormData,
       isPublished: true,
+      status: "pending",
     };
 
     const response = await addNewCourseService(courseFinalFormData);
@@ -70,6 +73,7 @@ function StudentAddNewCoursePage() {
     if (response?.success) {
       setCourseContentFormData(courseContentInitialFormData);
       setCourseCurriculumFormData(courseCurriculumInitialFormData);
+      navigate(-1); // sending it back to the last page
     }
     console.log(courseFinalFormData, "CourseFinalFormData");
   }
