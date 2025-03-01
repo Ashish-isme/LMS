@@ -11,8 +11,6 @@ createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <AdminProvider>
         <UserProvider>
-          {" "}
-          {/*Change*/}
           <App />
         </UserProvider>
       </AdminProvider>

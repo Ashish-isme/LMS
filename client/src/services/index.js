@@ -77,6 +77,11 @@ export async function bulkMediaUploadService(formData, onProgressCallback) {
       onProgressCallback(percentCompleted);
     },
   });
+  return data;
+}
+
+export async function fetchUserCourseListService() {
+  const { data } = await axiosInstance.get(`/user/course/get`);
 
   return data;
 }

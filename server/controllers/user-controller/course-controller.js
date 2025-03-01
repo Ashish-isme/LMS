@@ -98,9 +98,61 @@ const updateCourseById = async (req, res) => {
   }
 };
 
+const getAllUserViewCourses = async (req, res) => {
+  try {
+    const coursesList = await Course.find({});
+    if (coursesList.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No Course Found",
+        data: [],
+      });
+    }
+    res.staus(200).json({
+      success: true,
+      message: "All courese retrieved",
+      data: coursesList,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
+};
+
+const getAllUserViewCoursesDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const courseDetails = await Course.findById(id);
+
+    if (!courseDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "No Course details Found",
+        data: null,
+      });
+    }
+
+    res.staus(200).json({
+      success: true,
+      data: courseDetails,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
+};
+
 module.exports = {
   addNewCourse,
   getAllCourses,
   updateCourseById,
   getCourseDetailsById,
+  getAllUserViewCourses,
+  getAllUserViewCoursesDetails,
 };
