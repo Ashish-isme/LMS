@@ -32,6 +32,8 @@ export async function mediaUploadService(formData, onProgressCallback) {
     },
   });
 
+  // console.log({ data }, "Test from media Upload");
+
   return data;
 }
 
@@ -80,8 +82,21 @@ export async function bulkMediaUploadService(formData, onProgressCallback) {
   return data;
 }
 
-export async function fetchUserCourseListService() {
-  const { data } = await axiosInstance.get(`/user/course/get`);
+export async function fetchUserViewCourseListService() {
+  try {
+    const { data } = await axiosInstance.get(`/user/course/get`);
+    console.log("API responsgge", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return { success: false, data: [] };
+  }
+}
+
+export async function fetchUserViewCourseDeataiksService(courseId) {
+  const { data } = await axiosInstance.get(
+    `/user/course/get/detail/${courseId}`
+  );
 
   return data;
 }

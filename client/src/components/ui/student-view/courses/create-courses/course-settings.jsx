@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserContext } from "@/context/user-context";
 import { mediaUploadService } from "@/services";
-import { useContext } from "react";
+import { useContext, useE } from "react";
 import MediaProgressbar from "@/components/media-progress-bar";
 
 function CourseSettingsByUser() {
@@ -30,13 +30,14 @@ function CourseSettingsByUser() {
           setMediaUploadProgressPercentage
         );
 
-        console.log(response);
-
         if (response.success) {
           setCourseContentFormData({
             ...courseContentFormData,
             image: response.data.url,
           });
+
+          console.log(courseContentFormData, "ImageData");
+
           setMediaUploadProgress(false);
         }
       } catch (e) {
