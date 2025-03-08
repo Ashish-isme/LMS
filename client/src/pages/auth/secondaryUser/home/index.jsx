@@ -8,6 +8,7 @@ import { fetchUserViewCourseListService } from "@/services";
 import { courseCategories } from "@/config";
 
 function StudentHomePage() {
+  // const navigate = useNavigate();
   const { userViewCoursesList, setUserViewCoursesList } =
     useContext(UserContext);
 
@@ -69,32 +70,31 @@ function StudentHomePage() {
       </section>
 
       <section className="py-12 px-4 lg:px-8">
-        <h2 className="text-2xl font-bold mb-6">Available Courses</h2>
+        <h2 className="text-2xl font-bold mb-6">Featured COourses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {userViewCoursesList && userViewCoursesList.length > 0 ? (
-            userViewCoursesList.map((courseItem) => {
-              console.log("Course Item:", courseItem); // Debugging statement
-              return (
-                <div key={courseItem?._id}>
-                  <img
-                    src={courseItem?.image}
-                    width={300}
-                    height={150}
-                    className="w-full h-40 object-cover border border-gray-500"
-                    alt="Course Thumbnail"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-bold mb-2">{courseItem?.title}</h3>
-                    <p className="text-sm text-gray-700 mb-2">
-                      {courseItem?.userName}
-                    </p>
-                    <p className="font-bold text-[16px]">
-                      ${courseItem?.pricing}
-                    </p>
-                  </div>
+            userViewCoursesList.map((courseItem) => (
+              <div
+                onClick={() => handleCourseNavigate(courseItem?._id)}
+                className="border rounded-lg overflow-hidden shadow cursor-pointer"
+              >
+                <img
+                  src={courseItem?.image}
+                  width={300}
+                  height={150}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-bold mb-1">{courseItem?.title}</h3>
+                  <p className="text-sm text-gray-700 mb-1">
+                    {courseItem?.userName}
+                  </p>
+                  <p className="font-bold text-[16px]">
+                    ${courseItem?.pricing}
+                  </p>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
             <h1>No Courses Found</h1>
           )}

@@ -18,6 +18,7 @@ export default function UserProvider({ children }) {
   const [mediaUploadProgress, setMediaUploadProgress] = useState(false);
   const [mediaUploadProgressPercentage, setMediaUploadProgressPercentage] =
     useState(0);
+  const [userCoursesList, setUserCoursesList] = useState([]);
   const [userViewCoursesList, setUserViewCoursesList] = useState([]);
 
   return (
@@ -31,6 +32,8 @@ export default function UserProvider({ children }) {
         setMediaUploadProgress,
         mediaUploadProgressPercentage,
         setMediaUploadProgressPercentage,
+        userCoursesList,
+        setUserCoursesList,
         userViewCoursesList,
         setUserViewCoursesList,
       }}
