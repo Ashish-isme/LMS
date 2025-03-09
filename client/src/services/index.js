@@ -82,10 +82,12 @@ export async function bulkMediaUploadService(formData, onProgressCallback) {
   return data;
 }
 
-export async function fetchUserViewCourseListService() {
+export async function fetchUserViewCourseListService(query) {
   try {
-    const { data } = await axiosInstance.get(`/user/course/get`);
-    console.log("API responsgge", data);
+    const { data } = await axiosInstance.get(
+      `/user/course/get${query ? `?${query}` : ""}`
+    );
+    console.log("API response", data);
     return data;
   } catch (error) {
     console.error("Error fetching courses:", error);
@@ -93,7 +95,7 @@ export async function fetchUserViewCourseListService() {
   }
 }
 
-export async function fetchUserViewCourseDeataiksService(courseId) {
+export async function fetchUserViewCourseDetailsService(courseId) {
   const { data } = await axiosInstance.get(
     `/user/course/get/detail/${courseId}`
   );

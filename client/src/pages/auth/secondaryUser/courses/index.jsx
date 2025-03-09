@@ -14,35 +14,63 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UserContext } from "@/context/user-context";
 import { fetchUserViewCourseListService } from "@/services";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
+import { createSearchParams, useSearchParams } from "react-router-dom";
+
+function createSearchParamsHelper(filterParams) {
+  // for search filter url create // helper function
+  const queryParams = [];
+
+  for (const [key, value] of Object.entries(filterParams)) {
+    if (Array.isArray(value) && value.length > 0) {
+      const paramValue = value.join(",");
+
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+    }
+  }
+  return queryParams.join("&"); // for multiple section selection and for differentiation.
+}
 
 function UserViewCoursesPage() {
   const [sort, setSort] = useState("price-lowtohigh");
   const [filters, setFilters] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { userViewCoursesList, setUserViewCoursesList } =
     useContext(UserContext);
 
   function handleFilterOnChange(getSectionId, getCurrentOption) {
     let updatedFilters = { ...filters };
-    const indexOfCurrentSection =
+    const indexOfCurrentSeection =
       Object.keys(updatedFilters).indexOf(getSectionId);
 
-    console.log(indexOfCurrentSection, getSectionId);
-
-    if (indexOfCurrentSection === -1) {
+    console.log(indexOfCurrentSeection, getSectionId);
+    if (indexOfCurrentSeection === -1) {
       updatedFilters = {
         ...updatedFilters,
         [getSectionId]: [getCurrentOption.id],
       };
+
       console.log(updatedFilters);
     } else {
       const indexOfCurrentOption = updatedFilters[getSectionId].indexOf(
         getCurrentOption.id
       );
+
+      if (indexOfCurrentOption === -1)
+        updatedFilters[getSectionId].push(getCurrentOption.id);
+      else updatedFilters[getSectionId].splice(indexOfCurrentOption, 1);
     }
+
+    setFilters(updatedFilters);
+    sessionStorage.setItem("filters", JSON.stringify(updatedFilters));
   }
 
-  async function fetchCourses() {
-    const response = await fetchUserViewCourseListService();
+  async function fetchCourses(filters, sort) {
+    const query = new URLSearchParams({
+      ...filters,
+      sortBy: sort,
+    });
+
+    const response = await fetchUserViewCourseListService(query);
     if (response?.success) setUserViewCoursesList(response?.data);
   }
 
@@ -52,8 +80,15 @@ function UserViewCoursesPage() {
   }
 
   useEffect(() => {
-    fetchCourses();
-  }, []);
+    const buildQueryStringForFilters = createSearchParamsHelper(filters);
+    setSearchParams(new URLSearchParams(buildQueryStringForFilters));
+  }, [filters]); // dependency here when filters is changed the useEffect will be run so that specific compoenent will only be rendered
+
+  useEffect(() => {
+    if ((filters !== null) & (sort !== null)) fetchCourses(filters, sort);
+  }, [filters, sort]);
+
+  console.log(filters);
 
   useEffect(() => {
     console.log("Deafult Sort : ", sort), [];
@@ -72,7 +107,12 @@ function UserViewCoursesPage() {
                   {filterOptions[keyItem].map((option) => (
                     <Label className="flex font-small items-center gap-3">
                       <Checkbox
-                        checked={false}
+                        checked={
+                          filters &&
+                          Object.keys(filters).length > 0 &&
+                          filters[keyItem] &&
+                          filters[keyItem].indexOf(option.id) > -1
+                        }
                         onCheckedChange={() =>
                           handleFilterOnChange(keyItem, option)
                         }

@@ -15,7 +15,7 @@ function StudentHomePage() {
   useEffect(() => {
     async function fetchCourses() {
       const response = await fetchUserViewCourseListService();
-      console.log(response, "ResponseCourseList");
+      console.log(response, "ResponseCourseList From Home Page");
       if (response?.success) setUserViewCoursesList(response?.data);
     }
     fetchCourses();
