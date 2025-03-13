@@ -15,12 +15,18 @@ export default function UserProvider({ children }) {
     courseCurriculumInitialFormData
   );
 
+  //for media context
   const [mediaUploadProgress, setMediaUploadProgress] = useState(false);
   const [mediaUploadProgressPercentage, setMediaUploadProgressPercentage] =
     useState(0);
+
   const [userCoursesList, setUserCoursesList] = useState([]);
   const [userViewCoursesList, setUserViewCoursesList] = useState([]);
+  const [loadingState, setLoadingState] = useState(true);
 
+  const [userViewCourseDetails, setUserViewCourseDetails] = useState(null);
+
+  const [currentCourseDetailsId, setCurrentCourseDetailsId] = useState(null);
   return (
     <UserContext.Provider
       value={{
@@ -36,6 +42,12 @@ export default function UserProvider({ children }) {
         setUserCoursesList,
         userViewCoursesList,
         setUserViewCoursesList,
+        loadingState,
+        setLoadingState,
+        userViewCourseDetails,
+        setUserViewCourseDetails,
+        currentCourseDetailsId,
+        setCurrentCourseDetailsId,
       }}
     >
       {children}

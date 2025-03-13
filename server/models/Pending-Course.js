@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const LectureSchema = new mongoose.Schema({
   title: String,
-  video: String,
+  videoUrl: String, //not being saved
   public_id: String,
   freePreview: Boolean,
 });
@@ -14,7 +14,7 @@ const CourseSchema = new mongoose.Schema({
   title: String,
   category: String,
   level: String,
-  primarylanguage: String,
+  primarylanguage: String, // not being saved
   subtitle: String,
   description: String,
   image: String,

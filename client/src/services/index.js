@@ -49,6 +49,12 @@ export async function fetchUserCourseListService() {
   return data;
 }
 
+export async function fetchUserBalanceDetail() {
+  const { data } = await axiosInstance.get(`/user/coins/details/${id}`);
+
+  return data;
+}
+
 export async function addNewCourseService(formData) {
   const { data } = await axiosInstance.post(`/user/course/add/`, formData);
 
@@ -97,7 +103,7 @@ export async function fetchUserViewCourseListService(query) {
 
 export async function fetchUserViewCourseDetailsService(courseId) {
   const { data } = await axiosInstance.get(
-    `/user/course/get/detail/${courseId}`
+    `/user/course/get/details/${courseId}`
   );
 
   return data;

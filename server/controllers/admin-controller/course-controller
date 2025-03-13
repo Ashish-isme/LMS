@@ -38,3 +38,8 @@ const getAllCourses = async (req, res) => {
     });
   }
 };
+
+module.exports = {
+  addNewCourse,
+  getAllCourses,
+};

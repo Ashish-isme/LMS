@@ -14,7 +14,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UserContext } from "@/context/user-context";
 import { fetchUserViewCourseListService } from "@/services";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
-import { createSearchParams, useSearchParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function createSearchParamsHelper(filterParams) {
   // for search filter url create // helper function
@@ -34,8 +39,13 @@ function UserViewCoursesPage() {
   const [sort, setSort] = useState("price-lowtohigh");
   const [filters, setFilters] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { userViewCoursesList, setUserViewCoursesList } =
-    useContext(UserContext);
+  const {
+    userViewCoursesList,
+    setUserViewCoursesList,
+    loadingState,
+    setLoadingState,
+  } = useContext(UserContext);
+  const navigate = useNavigate();
 
   function handleFilterOnChange(getSectionId, getCurrentOption) {
     let updatedFilters = { ...filters };
@@ -72,6 +82,7 @@ function UserViewCoursesPage() {
 
     const response = await fetchUserViewCourseListService(query);
     if (response?.success) setUserViewCoursesList(response?.data);
+    setLoadingState(false);
   }
 
   function handleSortChange(value) {
@@ -85,14 +96,29 @@ function UserViewCoursesPage() {
   }, [filters]); // dependency here when filters is changed the useEffect will be run so that specific compoenent will only be rendered
 
   useEffect(() => {
+    setSort("price-lowhigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, []);
+
+  useEffect(() => {
     if ((filters !== null) & (sort !== null)) fetchCourses(filters, sort);
   }, [filters, sort]);
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("filters");
+    };
+  }, []);
 
   console.log(filters);
 
   useEffect(() => {
     console.log("Deafult Sort : ", sort), [];
   });
+
+  // function handleCourseClick() {
+  //   return navigate(`/course/details/${courseItem?._id}`);
+  // }
 
   return (
     <div className="container mx-auto p-4">
@@ -101,7 +127,7 @@ function UserViewCoursesPage() {
         <aside className="w-full md:w-64 space-y-4">
           <div className="space-y-4">
             {Object.keys(filterOptions).map((keyItem) => (
-              <div className="space-y-4">
+              <div>
                 <h3 className="font-bold mb-3">{keyItem.toUpperCase()}</h3>
                 <div className="grid gap-2 mt-2">
                   {filterOptions[keyItem].map((option) => (
@@ -158,12 +184,19 @@ function UserViewCoursesPage() {
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            <span className="text-sm text-black fontt-2"> 10 Results</span>
+            <span className="text-sm text-black font-2">
+              {" "}
+              {userViewCoursesList.length} Results
+            </span>
           </div>
-          <div className="space-y-4 ">
+          <div>
             {userViewCoursesList && userViewCoursesList.length > 0 ? (
               userViewCoursesList.map((courseItem) => (
-                <Card className="cursor-pointer" key={courseItem?._id}>
+                <Card
+                  onClick={() => navigate(`/course/details/${courseItem?._id}`)}
+                  className="cursor-pointer mb-3"
+                  key={courseItem?._id}
+                >
                   <CardContent className="flex gap-4 p-4">
                     <div className="w-48 h-32 flex-shrink-0">
                       <img
@@ -198,6 +231,8 @@ function UserViewCoursesPage() {
                   </CardContent>
                 </Card>
               ))
+            ) : loadingState ? (
+              <Skeleton />
             ) : (
               <h1>No Courses Found</h1>
             )}
