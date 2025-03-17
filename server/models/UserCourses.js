@@ -6,8 +6,8 @@ const UserCoursesSchema = new mongoose.Schema({
     {
       courseId: String,
       title: String,
-      userId: String,
-      userName: String,
+      creatorId: String,
+      creatorName: String,
       dateofPurchase: Date,
       courseImage: String,
     },

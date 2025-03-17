@@ -22,6 +22,16 @@ export default function AuthProvider({ children }) {
     console.log(data);
   }
 
+  const updateSkillCoinBalance = (newBalance) => {
+    setAuth((prevAuth) => ({
+      ...prevAuth,
+      user: {
+        ...prevAuth.user,
+        skillCoinBalance: newBalance,
+      },
+    }));
+  };
+
   async function handleLoginUser(event) {
     event.preventDefault();
     const data = await loginService(signInFormData);
@@ -97,6 +107,7 @@ export default function AuthProvider({ children }) {
         handleLoginUser,
         auth,
         resetCredentials,
+        updateSkillCoinBalance,
       }}
     >
       {loading ? <Skeleton /> : children}

@@ -8,4 +8,4 @@ const router = express.Router();
 
 router.get("/get/userdetails/:id", getUserSkillCoins);
 
-module.export = router;
+module.exports = router;

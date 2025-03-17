@@ -6,6 +6,7 @@ export async function registerService(formData) {
     //This is known as the request body.
     ...formData, // passed data to the controller , used spread operator
     role: "user",
+    skillCoinBalance: 100,
   });
 
   return data;
@@ -108,3 +109,16 @@ export async function fetchUserViewCourseDetailsService(courseId) {
 
   return data;
 }
+
+export const fetchPurchaseCourseService = async (courseDetails) => {
+  try {
+    const response = await axiosInstance.post(
+      "/user/purchase/purchase-course",
+      courseDetails
+    );
+    return response.data; // Assuming the response contains success flag and message
+  } catch (error) {
+    console.error("Error purchasing course:", error);
+    return { success: false, message: "Error purchasing course." };
+  }
+};

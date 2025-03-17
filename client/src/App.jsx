@@ -12,6 +12,7 @@ import AdminAddNewCoursePage from "./pages/auth/primaryUser/add-new-course";
 import StudentAddNewCoursePage from "./pages/auth/secondaryUser/course-creation";
 import UserViewCoursesPage from "./pages/auth/secondaryUser/courses";
 import UserViewCourseDetailsPage from "./pages/auth/secondaryUser/course-details";
+import UserCoursesPage from "./pages/auth/secondaryUser/user-courses";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -69,6 +70,7 @@ function App() {
           path="course/details/:id"
           element={<UserViewCourseDetailsPage />}
         />
+        <Route path="user-courses" element={<UserCoursesPage />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />

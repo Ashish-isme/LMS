@@ -2,11 +2,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UserContext } from "@/context/user-context";
 import { fetchUserViewCourseDetailsService } from "@/services";
 import { useContext, useEffect, useState } from "react";
+import { fetchPurchaseCourseService } from "@/services";
 import { useParams } from "react-router-dom";
 import { UsersRound, CheckCircle, PlayCircle, Lock } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import VideoPlayer from "@/components/video-player/";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +26,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"; // Importing Select Dropdown
+} from "@/components/ui/select";
+import { AuthContext } from "@/context/auth-context";
 
 function UserViewCourseDetailsPage() {
   const {
@@ -33,8 +39,15 @@ function UserViewCourseDetailsPage() {
     setLoadingState,
   } = useContext(UserContext);
 
+  const { auth, updateSkillCoinBalance } = useContext(AuthContext);
+  const { user } = auth;
+  const navigate = useNavigate();
+
   const [selectedPreviewUrl, setSelectedPreviewUrl] = useState(null);
   const [showPreviewDialogBox, setShowPreviewDialogBox] = useState(false);
+  const [showBuyDialogBox, setShowBuyDialogBox] = useState(false);
+  const [showInsufficientBalanceDialog, setShowInsufficientBalanceDialog] =
+    useState(false);
 
   const { id } = useParams();
 
@@ -70,11 +83,81 @@ function UserViewCourseDetailsPage() {
     return <Skeleton />;
   }
 
+  function handleBuyCourse() {
+    const userBalance = user?.skillCoinBalance || 0;
+    const coursePrice = userViewCourseDetails?.pricing || 0;
+
+    if (userBalance >= coursePrice) {
+      setShowBuyDialogBox(true);
+    } else {
+      setShowInsufficientBalanceDialog(true);
+    }
+  }
+
+  const handleConfirmPurchase = async () => {
+    const courseDetails = {
+      userId: user?._id,
+      courseId: userViewCourseDetails?._id,
+      title: userViewCourseDetails?.title,
+      creatorId: userViewCourseDetails?.userId,
+      creatorName: userViewCourseDetails?.userName,
+      dateofPurchase: new Date().toISOString(),
+      courseImage: userViewCourseDetails?.image,
+      coursePricing: userViewCourseDetails?.pricing,
+    };
+
+    try {
+      // Call the service to send the data to the backend
+      const response = await fetchPurchaseCourseService(courseDetails);
+
+      if (response.success) {
+        // alert("Course purchased successfully!");
+        updateSkillCoinBalance(response.updatedBalance);
+        toast.success("Course successfully purchased!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        navigate("/user-courses");
+      } else {
+        toast.error(
+          response.message || "Failed to purchase course. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    }
+
+    setShowBuyDialogBox(false);
+  };
+
   const freePreviewLectures =
     userViewCourseDetails?.curriculum?.filter((item) => item.freePreview) || [];
 
   return (
     <div className="mx-auto p-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="bg-gray-900 text-white p-8 rounded-t-lg">
         <h1 className="text-3xl font-bold mb-4">
           {userViewCourseDetails?.title}
@@ -170,13 +253,67 @@ function UserViewCourseDetailsPage() {
                   ${userViewCourseDetails?.pricing}
                 </span>
               </div>
-              <Button className="w-full">Buy Now</Button>
+              <Button className="w-full" onClick={handleBuyCourse}>
+                Buy Now
+              </Button>
             </CardContent>
           </Card>
         </aside>
       </div>
 
-      {/* Dialog Box for Course Preview */}
+      {/* Buy Course Confirmation Dialog */}
+      <Dialog open={showBuyDialogBox} onOpenChange={setShowBuyDialogBox}>
+        <DialogContent className="flex flex-col items-center text-center space-y-4 p-6">
+          <ShoppingCart className="h-12 w-12 text-blue-500" />
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              Proceed to buy this course?
+            </DialogTitle>
+          </DialogHeader>
+          <DialogFooter className="flex justify-center space-x-4">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary" className="w-32">
+                No
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              variant="default"
+              className="w-32"
+              onClick={handleConfirmPurchase}
+            >
+              Yes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Insufficient Balance Dialog */}
+      <Dialog
+        open={showInsufficientBalanceDialog}
+        onOpenChange={setShowInsufficientBalanceDialog}
+      >
+        <DialogContent className="flex flex-col items-center text-center space-y-4 p-6">
+          <Lock className="h-12 w-12 text-red-500" />
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-red-600">
+              Insufficient Balance!
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-gray-600">
+            You do not have enough balance to buy this course.
+          </p>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="default" className="w-32">
+                OK
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Course Preview Dialog */}
       <Dialog
         open={showPreviewDialogBox}
         onOpenChange={() => setShowPreviewDialogBox(false)}
@@ -186,7 +323,6 @@ function UserViewCourseDetailsPage() {
             <DialogTitle>Course Free Preview</DialogTitle>
           </DialogHeader>
 
-          {/* Dropdown for Selecting Preview Lectures */}
           {freePreviewLectures.length > 0 ? (
             <Select onValueChange={(value) => setSelectedPreviewUrl(value)}>
               <SelectTrigger className="w-full">
@@ -204,7 +340,6 @@ function UserViewCourseDetailsPage() {
             <p>No free previews available.</p>
           )}
 
-          {/* Video Player */}
           <div className="aspect-video mb-4 rounded-lg flex items-center justify-center">
             {selectedPreviewUrl ? (
               <VideoPlayer
@@ -216,14 +351,6 @@ function UserViewCourseDetailsPage() {
               <p className="text-center">Select a lecture to preview</p>
             )}
           </div>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

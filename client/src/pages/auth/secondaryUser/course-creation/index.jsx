@@ -73,7 +73,7 @@ function StudentAddNewCoursePage() {
     if (response?.success) {
       setCourseContentFormData(courseContentInitialFormData);
       setCourseCurriculumFormData(courseCurriculumInitialFormData);
-      navigate(-1); // sending it back to the last page
+      navigate(-1);
     }
     console.log(courseFinalFormData, "CourseFinalFormData");
   }

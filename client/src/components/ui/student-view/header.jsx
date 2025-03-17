@@ -6,8 +6,10 @@ import { AuthContext } from "@/context/auth-context";
 import { BadgeDollarSign } from "lucide-react";
 
 function StudentViewControllerHeader() {
-  const { resetCredentials } = useContext(AuthContext);
+  const { auth, resetCredentials } = useContext(AuthContext);
+  const { user } = auth;
   const navigate = useNavigate();
+  const skillCoinBalance = user?.skillCoinBalance || 0;
 
   function handleLogout() {
     resetCredentials();
@@ -38,8 +40,8 @@ function StudentViewControllerHeader() {
           </Button>
           <Button
             variant="ghost"
-            className="text-sm font-medium"
-            onClick={() => navigate("/my-courses")}
+            className="text-sm font-medium cursor-pointer"
+            onClick={() => navigate("/user-courses")}
           >
             My Courses
           </Button>
@@ -48,7 +50,7 @@ function StudentViewControllerHeader() {
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2 text-sm font-medium">
           <BadgeDollarSign color="#16addf" strokeWidth={2.5} />
-          <span>100</span>
+          <span>{skillCoinBalance}</span>
         </div>
         <Button variant="outline" onClick={handleLogout}>
           Sign Out
