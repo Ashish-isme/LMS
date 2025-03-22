@@ -12,7 +12,10 @@ import { useState, useContext, useEffect } from "react";
 import { filterOptions, sortOptions } from "../../../../config/index";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserContext } from "@/context/user-context";
-import { fetchUserViewCourseListService } from "@/services";
+import {
+  checkCoursrPurchaseInfoService,
+  fetchUserViewCourseListService,
+} from "@/services";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import {
   createSearchParams,
@@ -20,6 +23,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AuthContext } from "@/context/auth-context";
 
 function createSearchParamsHelper(filterParams) {
   // for search filter url create // helper function
@@ -46,6 +50,7 @@ function UserViewCoursesPage() {
     setLoadingState,
   } = useContext(UserContext);
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
 
   function handleFilterOnChange(getSectionId, getCurrentOption) {
     let updatedFilters = { ...filters };
@@ -88,6 +93,23 @@ function UserViewCoursesPage() {
   function handleSortChange(value) {
     console.log("value:", value);
     setSort(value);
+  }
+
+  async function handleCourseNavigation(getCurrentCourseId) {
+    const response = await checkCoursrPurchaseInfoService(
+      getCurrentCourseId,
+      auth?.user?._id
+    );
+
+    if (response?.success) {
+      if (response?.data) {
+        navigate(`/course-progress/${getCurrentCourseId}`);
+      } else {
+        navigate(`/course/details/${getCurrentCourseId}`);
+      }
+    }
+
+    console.log(response, "reponse for navigation");
   }
 
   useEffect(() => {
@@ -193,7 +215,7 @@ function UserViewCoursesPage() {
             {userViewCoursesList && userViewCoursesList.length > 0 ? (
               userViewCoursesList.map((courseItem) => (
                 <Card
-                  onClick={() => navigate(`/course/details/${courseItem?._id}`)}
+                  onClick={() => handleCourseNavigation(courseItem?._id)}
                   className="cursor-pointer mb-3"
                   key={courseItem?._id}
                 >

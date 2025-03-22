@@ -27,6 +27,12 @@ export default function UserProvider({ children }) {
   const [userViewCourseDetails, setUserViewCourseDetails] = useState(null);
 
   const [currentCourseDetailsId, setCurrentCourseDetailsId] = useState(null);
+
+  const [studentBoughtCoursesList, setstudentBoughtCoursesList] = useState([]); // recheck for this
+  const [userCurrentCourseProgress, setUserCurrentCourseProgress] = useState(
+    {}
+  );
+
   return (
     <UserContext.Provider
       value={{
@@ -48,6 +54,10 @@ export default function UserProvider({ children }) {
         setUserViewCourseDetails,
         currentCourseDetailsId,
         setCurrentCourseDetailsId,
+        studentBoughtCoursesList,
+        setstudentBoughtCoursesList,
+        userCurrentCourseProgress,
+        setUserCurrentCourseProgress,
       }}
     >
       {children}

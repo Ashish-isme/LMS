@@ -1,6 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserContext } from "@/context/user-context";
-import { fetchUserViewCourseDetailsService } from "@/services";
+import {
+  checkCoursrPurchaseInfoService,
+  fetchUserViewCourseDetailsService,
+} from "@/services";
 import { useContext, useEffect, useState } from "react";
 import { fetchPurchaseCourseService } from "@/services";
 import { useParams } from "react-router-dom";
@@ -52,6 +55,25 @@ function UserViewCourseDetailsPage() {
   const { id } = useParams();
 
   async function fetchUserViewCourseDetails() {
+    const checkCoursrPurchaseInfoResponse =
+      await checkCoursrPurchaseInfoService(
+        currentCourseDetailsId,
+        auth?.user?._id
+      );
+
+    // console.log(
+    //   checkCoursrPurchaseInfoResponse,
+    //   "checkCoursrPurchaseInfoResponse"
+    // );
+
+    if (
+      checkCoursrPurchaseInfoResponse?.success &&
+      checkCoursrPurchaseInfoResponse?.data
+    ) {
+      navigate(`/course-progress/${currentCourseDetailsId}`);
+      return;
+    } // navigation to course progress
+
     const response = await fetchUserViewCourseDetailsService(
       currentCourseDetailsId
     );
@@ -78,6 +100,13 @@ function UserViewCourseDetailsPage() {
   useEffect(() => {
     if (id) setCurrentCourseDetailsId(id);
   }, [id]);
+
+  useEffect(() => {
+    if (!location.pathname.includes("course/details"))
+      setUserViewCourseDetails(null),
+        setCurrentCourseDetailsId(null),
+        setCoursePurchasedId(null);
+  }, [location.pathname]);
 
   if (loadingState) {
     return <Skeleton />;

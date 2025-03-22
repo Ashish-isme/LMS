@@ -5,8 +5,9 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth-routes/index");
 const mediaRoutes = require("./routes/user-routes/media-routes");
 const userViewCourseRoutes = require("./routes/user-routes/course-routes");
-const userCourseRoutes = require("./routes/user-routes/user-routes");
+const userCourseRoutes = require("./routes/user-routes/user-courses-routes");
 const userPurchaseCourseRoutes = require("./routes/user-routes/purchase-course");
+const userCourseProgressRoutes = require("./routes/user-routes/course-progress-routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,8 +33,9 @@ mongoose
 app.use("/auth", authRoutes);
 app.use("/media", mediaRoutes);
 app.use("/user/course", userViewCourseRoutes);
-app.use("/user/courses", userCourseRoutes);
+app.use("/user/courses-bought", userCourseRoutes);
 app.use("/user/purchase", userPurchaseCourseRoutes);
+app.use("/user/course-progress", userCourseProgressRoutes);
 
 app.use((err, req, res, next) => {
   console.log(err.stack);

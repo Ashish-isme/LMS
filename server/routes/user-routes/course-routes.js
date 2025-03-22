@@ -7,6 +7,7 @@ const {
   updateCourseById,
   getAllUserViewCourses,
   getAllUserViewCoursesDetails,
+  checkCoursePurchasedInfo,
 } = require("../../controllers/user-controller/course-controller");
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.get("/get/details/:id", getCourseDetailsById);
 router.put("/update/:id", updateCourseById);
 router.get("/get", getAllUserViewCourses);
 router.get("/get/details/:id", getAllUserViewCoursesDetails);
+router.get("/purchase-info/:id/:userId", checkCoursePurchasedInfo);
 
 module.exports = router;

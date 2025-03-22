@@ -106,7 +106,15 @@ export async function fetchUserViewCourseDetailsService(courseId) {
   const { data } = await axiosInstance.get(
     `/user/course/get/details/${courseId}`
   );
+  console.log(data, "User dataaaa");
+  return data;
+}
 
+export async function checkCoursrPurchaseInfoService(courseId, userId) {
+  const { data } = await axiosInstance.get(
+    `/user/course/purchase-info/${courseId}/${userId}`
+  );
+  console.log(data, "User dataaaa");
   return data;
 }
 
@@ -116,9 +124,25 @@ export const fetchPurchaseCourseService = async (courseDetails) => {
       "/user/purchase/purchase-course",
       courseDetails
     );
-    return response.data; // Assuming the response contains success flag and message
+    return response.data;
   } catch (error) {
     console.error("Error purchasing course:", error);
     return { success: false, message: "Error purchasing course." };
   }
 };
+
+export async function fetchUserBoughtCourseService(userId) {
+  console.log(userId, "userid in service");
+  const { data } = await axiosInstance.get(
+    `/user/courses-bought/get/${userId}`
+  );
+
+  return data;
+}
+
+export async function getCurrentCourseProgressService(userId, courseId) {
+  const { data } = await axiosInstance.get(
+    `/user/course-progress/get/${userId}/${courseId}`
+  );
+  return data;
+}

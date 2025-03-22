@@ -3,6 +3,17 @@ const User = require("../../models/User");
 
 const getCoursesByUserId = async (req, res) => {
   try {
+    const { userId } = req.params;
+    studentUserId = userId;
+    console.log(studentUserId, "UserId ppassed");
+    const userBoughtCourses = await UserCourses.findOne({
+      userId: studentUserId,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: userBoughtCourses.courses,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -11,9 +22,8 @@ const getCoursesByUserId = async (req, res) => {
     });
   }
 };
-
+``;
 const purchaseCourse = async (req, res) => {
-  console.log("Purchase API HIT");
   try {
     const {
       userId,
@@ -116,4 +126,5 @@ const purchaseCourse = async (req, res) => {
 
 module.exports = {
   purchaseCourse,
+  getCoursesByUserId,
 };

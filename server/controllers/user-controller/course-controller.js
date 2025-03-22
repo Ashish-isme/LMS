@@ -1,4 +1,5 @@
 const Course = require("../../models/Pending-Course");
+const UserCourses = require("../..//models/UserCourses");
 
 const addNewCourse = async (req, res) => {
   try {
@@ -99,7 +100,6 @@ const updateCourseById = async (req, res) => {
 };
 
 const getAllUserViewCourses = async (req, res) => {
-  console.log("Api Hit");
   try {
     const {
       category = [],
@@ -168,7 +168,7 @@ const getAllUserViewCoursesDetails = async (req, res) => {
       });
     }
 
-    res.staus(200).json({
+    res.status(200).json({
       success: true,
       data: courseDetails,
     });
@@ -181,6 +181,28 @@ const getAllUserViewCoursesDetails = async (req, res) => {
   }
 };
 
+const checkCoursePurchasedInfo = async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+    const userCourses = await UserCourses.findOne({
+      userId: userId,
+    });
+
+    const ifUserAlreadyBoughtCurrentCourse =
+      userCourses.courses.findIndex((item) => item.courseId === id) > -1;
+
+    res.status(200).json({
+      success: true,
+      data: ifUserAlreadyBoughtCurrentCourse,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
+};
 module.exports = {
   addNewCourse,
   getAllCourses,
@@ -188,4 +210,5 @@ module.exports = {
   getCourseDetailsById,
   getAllUserViewCourses,
   getAllUserViewCoursesDetails,
+  checkCoursePurchasedInfo,
 };

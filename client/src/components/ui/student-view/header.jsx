@@ -27,7 +27,11 @@ function StudentViewControllerHeader() {
           <Button
             variant="ghost"
             className="text-sm font-medium"
-            onClick={() => navigate("/courses")}
+            onClick={() => {
+              location.pathname.includes("/courses")
+                ? null
+                : navigate("/courses");
+            }}
           >
             Explore Courses
           </Button>
