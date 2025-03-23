@@ -44,6 +44,7 @@ function UserViewCourseDetailsPage() {
 
   const { auth, updateSkillCoinBalance } = useContext(AuthContext);
   const { user } = auth;
+
   const navigate = useNavigate();
 
   const [selectedPreviewUrl, setSelectedPreviewUrl] = useState(null);
