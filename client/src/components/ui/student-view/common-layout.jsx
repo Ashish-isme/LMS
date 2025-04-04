@@ -7,7 +7,8 @@ function StudentViewCommonLayout() {
     <div>
       {!location.pathname.includes("course-progress") ? (
         <StudentViewControllerHeader />
-      ) : null}
+      ) : null}{" "}
+      {/* remove header for this courseprogress apge */}
       <Outlet />
     </div>
   );

@@ -14,6 +14,7 @@ import UserViewCoursesPage from "./pages/auth/secondaryUser/courses";
 import UserViewCourseDetailsPage from "./pages/auth/secondaryUser/course-details";
 import UserCoursesPage from "./pages/auth/secondaryUser/user-courses";
 import UserViewCourseProgressPage from "./pages/auth/secondaryUser/course-progress";
+import PackagesPage from "./pages/auth/secondaryUser/balance-purchase";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -67,6 +68,8 @@ function App() {
         <Route path="home" element={<StudentHomePage />} />
         <Route path="courses" element={<UserViewCoursesPage />} />
         <Route path="course-creation" element={<StudentAddNewCoursePage />} />
+        <Route path="balance-purchase" element={<PackagesPage />} />
+
         <Route
           path="course/details/:id"
           element={<UserViewCourseDetailsPage />}

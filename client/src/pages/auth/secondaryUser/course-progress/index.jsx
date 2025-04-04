@@ -16,6 +16,7 @@ import {
   getCurrentCourseProgressService,
   markLectureAsViewedService,
   resetCourseProgressService,
+  getSignedUrl,
 } from "@/services";
 import {
   Dialog,
@@ -215,9 +216,7 @@ function UserViewCourseProgressPage() {
                         ) : (
                           <Play className="h-4 w-4 " />
                         )}
-                        <span>
-                          {item?.title} : {item?.title}
-                        </span>
+                        <span>{item?.title}</span>
                       </div>
                     )
                   )}

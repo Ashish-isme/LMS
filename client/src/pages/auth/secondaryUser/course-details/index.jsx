@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserContext } from "@/context/user-context";
 import {
-  checkCoursrPurchaseInfoService,
+  checkCoursePurchaseInfoService,
   fetchUserViewCourseDetailsService,
 } from "@/services";
 import { useContext, useEffect, useState } from "react";
@@ -57,7 +57,7 @@ function UserViewCourseDetailsPage() {
 
   async function fetchUserViewCourseDetails() {
     const checkCoursrPurchaseInfoResponse =
-      await checkCoursrPurchaseInfoService(
+      await checkCoursePurchaseInfoService(
         currentCourseDetailsId,
         auth?.user?._id
       );

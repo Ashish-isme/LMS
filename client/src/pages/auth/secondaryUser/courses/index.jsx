@@ -13,7 +13,7 @@ import { filterOptions, sortOptions } from "../../../../config/index";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserContext } from "@/context/user-context";
 import {
-  checkCoursrPurchaseInfoService,
+  checkCoursePurchaseInfoService,
   fetchUserViewCourseListService,
 } from "@/services";
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
@@ -96,7 +96,7 @@ function UserViewCoursesPage() {
   }
 
   async function handleCourseNavigation(getCurrentCourseId) {
-    const response = await checkCoursrPurchaseInfoService(
+    const response = await checkCoursePurchaseInfoService(
       getCurrentCourseId,
       auth?.user?._id
     );

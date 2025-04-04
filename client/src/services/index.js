@@ -44,6 +44,13 @@ export async function mediaDeleteService(id) {
   return data;
 }
 
+export async function getSignedUrl(publicId, resourceType = "video") {
+  const { data } = await axiosInstance.get(`media/signed-url`, {
+    params: { publicId, resourceType },
+  });
+  return data.signedUrl;
+}
+
 export async function fetchUserCourseListService() {
   const { data } = await axiosInstance.get(`/user/course/get`);
 
@@ -110,7 +117,7 @@ export async function fetchUserViewCourseDetailsService(courseId) {
   return data;
 }
 
-export async function checkCoursrPurchaseInfoService(courseId, userId) {
+export async function checkCoursePurchaseInfoService(courseId, userId) {
   const { data } = await axiosInstance.get(
     `/user/course/purchase-info/${courseId}/${userId}`
   );

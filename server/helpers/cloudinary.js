@@ -11,6 +11,7 @@ const uploadMediaToCloudinary = async (filepath) => {
   try {
     const result = await cloudinary.uploader.upload(filepath, {
       resource_type: "auto",
+      type: "authenticated",
     });
 
     return result;
@@ -18,6 +19,14 @@ const uploadMediaToCloudinary = async (filepath) => {
     console.log(error);
     throw new Error("Error while uploading to cloudinary");
   }
+};
+
+const generateSignedUrl = (publicId, resourceType = "video") => {
+  return cloudinary.private_download_url(publicId, resourceType, {
+    sign_url: true,
+    type: "authenticated",
+    expires_at: Math.floor(Date.now() / 1000) + 450,
+  });
 };
 
 const deleteMediaFromCloudinary = async (publicId) => {
@@ -28,4 +37,8 @@ const deleteMediaFromCloudinary = async (publicId) => {
   }
 };
 
-module.exports = { uploadMediaToCloudinary, deleteMediaFromCloudinary };
+module.exports = {
+  uploadMediaToCloudinary,
+  deleteMediaFromCloudinary,
+  generateSignedUrl,
+};

@@ -30,6 +30,7 @@ function StudentAddNewCoursePage() {
     }
     return value === "" || value === null || value === undefined;
   }
+
   function validateFormData() {
     for (const key in courseContentFormData) {
       if (isEmpty(courseContentFormData[key])) {
@@ -52,6 +53,7 @@ function StudentAddNewCoursePage() {
         hasFreePreview = true; //found at least one free preview
       }
     }
+
     return hasFreePreview;
   }
 

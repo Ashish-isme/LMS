@@ -1,7 +1,14 @@
 const CourseProgress = require("../../models/CourseProgress");
 const Course = require("../../models/Pending-Course");
 const UserCourses = require("../../models/UserCourses");
+const cloudinary = require("cloudinary").v2;
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 // marking the current lecture as viewed
 
 const markCurrentLectureAsViewed = async (req, res) => {

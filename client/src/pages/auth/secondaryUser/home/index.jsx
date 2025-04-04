@@ -5,8 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/context/auth-context";
 import { UserContext } from "@/context/user-context";
 import { fetchUserViewCourseListService } from "@/services";
+import { checkCoursePurchaseInfoService } from "@/services";
 import { courseCategories } from "@/config";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselItem,
+  CarouselContent,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import {
   ArrowDown,
   Search,
@@ -20,6 +28,7 @@ function StudentHomePage() {
   const navigate = useNavigate();
   const { userViewCoursesList, setUserViewCoursesList } =
     useContext(UserContext);
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     async function fetchCourses() {
@@ -30,15 +39,27 @@ function StudentHomePage() {
     fetchCourses();
   }, [setUserViewCoursesList]);
 
-  const handleCourseNavigate = (courseId) => {
-    console.log(`Navigating to course: ${courseId}`);
-    navigate(`/courses/${courseId}`);
-  };
+  async function handleCourseNavigation(getCurrentCourseId) {
+    const response = await checkCoursePurchaseInfoService(
+      getCurrentCourseId,
+      auth?.user?._id
+    );
+
+    if (response?.success) {
+      if (response?.data) {
+        navigate(`/course-progress/${getCurrentCourseId}`);
+      } else {
+        navigate(`/course/details/${getCurrentCourseId}`);
+      }
+    }
+
+    console.log(response, "reponse for navigation");
+  }
 
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-32 pb-16 relative overflow-hidden">
+      <section className="pt-10 pb-16 relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute top-0 -left-40 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
@@ -76,21 +97,6 @@ function StudentHomePage() {
                 className="rounded-xl shadow-lg object-cover mx-auto"
                 style={{ maxHeight: "400px" }}
               />
-
-              <div className="hidden lg:block absolute -right-4 bottom-1/4">
-                <motion.div
-                  animate={{ y: [0, 15, 0] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.8,
-                    ease: "easeInOut",
-                  }}
-                  className="w-10 h-10 border-2 border-black rounded-full flex items-center justify-center"
-                >
-                  <ArrowDown className="h-5 w-5" />
-                </motion.div>
-                <p className="text-gray-500 text-sm mt-2 ml-1">scroll down</p>
-              </div>
             </div>
           </div>
         </div>
@@ -201,64 +207,109 @@ function StudentHomePage() {
       </section>
 
       {/* Featured Courses */}
-      <section className="py-16 px-4 lg:px-8">
+      <section className="py-8 px-4 lg:px-8 bg-white">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold">Featured Courses</h2>
-            <Button className="flex items-center text-blue-600" variant="ghost">
-              View All <ArrowRight className="ml-2 h-4 w-4" />
+          <div className="mb-6 flex justify-between items-center">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Featured Courses
+            </h2>
+            <Button
+              onClick={() => navigate("/courses")}
+              className="flex items-center text-blue-600"
+              variant="ghost"
+            >
+              View All
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {userViewCoursesList && userViewCoursesList.length > 0 ? (
-              userViewCoursesList.map((courseItem) => (
-                <Card
-                  key={courseItem._id}
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleCourseNavigate(courseItem._id)}
-                >
-                  <div className="relative">
-                    <img
-                      src={courseItem.image}
-                      alt={courseItem.title}
-                      className="w-full h-48 object-cover"
-                    />
-                  </div>
-                  <CardContent className="p-5">
-                    <h3 className="font-bold text-lg mb-2 line-clamp-2">
-                      {courseItem.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {courseItem.userName}
-                    </p>
-                    <div className="flex items-center mb-2">
-                      <div className="flex text-yellow-400">
-                        <Star className="h-4 w-4 fill-yellow-400" />
-                        <span className="ml-1 text-sm font-medium text-gray-700">
-                          {courseItem.rating}
-                        </span>
+          {userViewCoursesList && userViewCoursesList.length > 0 ? (
+            <div className="relative">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-4">
+                  {userViewCoursesList.map((courseItem) => (
+                    <CarouselItem
+                      key={courseItem._id}
+                      className="pl-4 basis-full sm:basis-1/3 md:basis-1/4 lg:basis-1/4"
+                    >
+                      <div
+                        className="cursor-pointer group border border-gray-200 rounded-lg overflow-hidden h-full"
+                        onClick={() => handleCourseNavigation(courseItem._id)}
+                      >
+                        {/* Image Container */}
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={courseItem.image}
+                            alt={courseItem.title}
+                            className="w-full h-32 object-cover"
+                          />
+                          {courseItem.isNew && (
+                            <div className="absolute bottom-2 left-2 bg-green-400 text-xs font-semibold px-2 py-0.5 rounded-full text-black">
+                              New
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="p-3">
+                          {/* Course Info */}
+                          <div className="flex justify-between text-xs text-gray-600 mb-1">
+                            <div>{courseItem.students} students</div>
+                            <div>{courseItem.duration || "4h 26m"}</div>
+                          </div>
+
+                          {/* Course Title */}
+                          <h3 className="font-bold text-sm mb-1 text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            {courseItem.title}
+                          </h3>
+
+                          {/* Instructor Name */}
+                          <p className="text-xs text-gray-700 mb-1">
+                            {courseItem.userName}
+                          </p>
+
+                          {/* Price */}
+                          <div className="flex justify-between items-center mt-2">
+                            <p className="font-bold text-sm text-blue-600">
+                              ${courseItem.pricing}
+                            </p>
+                            <button className="text-gray-400 hover:text-gray-700">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <span className="mx-2 text-gray-300">•</span>
-                      <span className="text-sm text-gray-600">
-                        {courseItem.students} students
-                      </span>
-                    </div>
-                    <p className="font-bold text-lg text-blue-600">
-                      ${courseItem.pricing}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8">
-                <p className="text-lg text-gray-600">No Courses Found</p>
-              </div>
-            )}
-          </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
+                  <CarouselNext className="h-8 w-8 bg-white border border-gray-200 shadow-md" />
+                </div>
+              </Carousel>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-lg text-gray-600">No Courses Found</p>
+            </div>
+          )}
         </div>
       </section>
-
       {/* Testimonials */}
       <section className="py-16 bg-blue-50">
         <div className="container mx-auto px-4">
