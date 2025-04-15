@@ -41,7 +41,7 @@ function StudentViewControllerHeader() {
       <div className="flex items-center space-x-8">
         <Link to="/home" className="flex items-center">
           <img
-            src="../../../../public/light (500 x 500 px) (80 x 40 px).svg"
+            src="../../../../public/Oglogo.png"
             alt="Logo"
             className="h-8 w-auto transition-transform hover:scale-105"
           />
@@ -92,7 +92,7 @@ function StudentViewControllerHeader() {
           <HoverCardContent className="w-44 p-2 bg-white border-2 mt-2 shadow-md rounded-lg z-0 border-none ml-[-150px]">
             <div className="flex flex-col space-y-1">
               <Link
-                to="/transaction-history"
+                to="/purchase-history"
                 className="text-[13px] stext-gray-700 hover:bg-blue-50 hover:text-[#3aa9f2] py-2 px-3 rounded-md transition-colors"
               >
                 Transaction History
@@ -136,7 +136,13 @@ function StudentViewControllerHeader() {
               className="cursor-pointer"
               onClick={() => navigate("/my-progress")}
             >
-              My Progress
+              Certificates
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => navigate("/my-progress")}
+            >
+              My Courses
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

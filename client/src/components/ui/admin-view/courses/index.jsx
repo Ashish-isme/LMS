@@ -18,7 +18,7 @@ function AdminCourses({ listOfCourses }) {
   console.log("List of Courses:", listOfCourses);
 
   return (
-    <Card>
+    <Card className="m-5">
       <CardHeader className="flex justify-between flex-row items-center">
         <CardTitle className="text-3xl font-bold">All Courses</CardTitle>
         <div className="flex gap-3">

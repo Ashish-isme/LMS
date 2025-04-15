@@ -23,6 +23,13 @@ export async function checkAuthService() {
   return data;
 }
 
+//for admin
+export async function fetchAllUsersService() {
+  const { data } = await axiosInstance.get("/admin/get-users/getUsers");
+
+  return data;
+}
+
 export async function mediaUploadService(formData, onProgressCallback) {
   const { data } = await axiosInstance.post("/media/upload", formData, {
     onUploadProgress: (progressEvent) => {
@@ -170,6 +177,45 @@ export async function resetCourseProgressService(userId, courseId) {
   const { data } = await axiosInstance.post(
     `/user/course-progress/reset-progress`,
     { userId, courseId }
+  );
+  return data;
+}
+
+// services created fro hiting thte transction controllers
+export async function createTransactionService(transactionDetails) {
+  const { data } = await axiosInstance.post(
+    `user/payment-success/create-transaction`,
+    transactionDetails
+  );
+  return data;
+}
+
+// service for getting all transactions (and also fitlering by date)
+export async function getAllTransactionByUserService(
+  userId,
+  startDate,
+  endDate
+) {
+  const params = new URLSearchParams();
+  if (startDate) params.append("startDate", startDate);
+  if (endDate) params.append("endDate", endDate);
+
+  const { data } = await axiosInstance.get(
+    `/user/payment-success/get-all-transaction/${userId}?${params}`
+  );
+  return data;
+}
+
+export async function getRevenueAnalyticsService() {
+  const { data } = await axiosInstance.get(
+    `/user/payment-success/revenue-analytics`
+  );
+  return data;
+}
+
+export async function getTotalEarningsService() {
+  const { data } = await axiosInstance.get(
+    `/user/payment-success/total-earnings`
   );
   return data;
 }

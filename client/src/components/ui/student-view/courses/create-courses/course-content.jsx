@@ -1,12 +1,12 @@
 import FormControls from "@/components/ui/common-form/form-controls";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { courseContentPageFormControls } from "@/config";
-import { UserContext } from "@/context/user-context";
+import { AdminContext } from "@/context/admin-context";
 import { useContext } from "react";
 
-function CourseContentByUser() {
+function CourseContentByAdmin() {
   const { courseContentFormData, setCourseContentFormData } =
-    useContext(UserContext);
+    useContext(AdminContext);
 
   console.log("Form Controls Data:", courseContentPageFormControls);
   console.log("Intial Data:", courseContentFormData);
@@ -26,4 +26,4 @@ function CourseContentByUser() {
   );
 }
 
-export default CourseContentByUser;
+export default CourseContentByAdmin;

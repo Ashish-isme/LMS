@@ -30,12 +30,12 @@ const PackagesPage = () => {
     transaction_uuid: uuidv4(),
     product_service_charge: "0",
     product_delivery_charge: "0",
-    product_code: "EPAYTEST",
-    success_url: "http://localhost:5173/paymentsuccess",
-    failure_url: "http://localhost:5173/paymentfailure",
+    product_code: "EPAYTEST", // Replace with your actual product code
+    success_url: `http://localhost:5173/payment-success`,
+    failure_url: `http://localhost:5173/payment-failed`,
     signed_field_names: "total_amount,transaction_uuid,product_code",
     signature: "",
-    secret: "8gBm/:&EnhH.1/q",
+    secret: "8gBm/:&EnhH.1/q", // Replace with your actual secret key
   });
 
   const packages = [
@@ -71,7 +71,6 @@ const PackagesPage = () => {
     },
   ];
 
-  // Generate signature function
   const generateSignature = (
     total_amount,
     transaction_uuid,
@@ -80,11 +79,9 @@ const PackagesPage = () => {
   ) => {
     const hashString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`;
     const hash = CryptoJS.HmacSHA256(hashString, secret);
-    const hashedSignature = CryptoJS.enc.Base64.stringify(hash);
-    return hashedSignature;
+    return CryptoJS.enc.Base64.stringify(hash);
   };
 
-  // Update signature when total_amount changes
   useEffect(() => {
     const { total_amount, transaction_uuid, product_code, secret } = formData;
     const hashedSignature = generateSignature(
@@ -93,21 +90,19 @@ const PackagesPage = () => {
       product_code,
       secret
     );
-
-    setFormData({ ...formData, signature: hashedSignature });
-  }, [formData.total_amount]);
+    setFormData((prev) => ({ ...prev, signature: hashedSignature }));
+  }, [formData.total_amount, formData.transaction_uuid]);
 
   const handleBuyClick = (pkg) => {
+    const newTransactionUUID = uuidv4();
     setSelectedPackage(pkg);
-
-    // Update formData with the selected package price
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       amount: pkg.price.toString(),
       total_amount: pkg.price.toString(),
-      transaction_uuid: uuidv4(), // Generate new UUID for each transaction
-    });
-
+      transaction_uuid: newTransactionUUID,
+      success_url: `http://localhost:5173/payment-success/?transaction_uuid=${newTransactionUUID}&total_amount=${pkg.price}&product_code=${prev.product_code}&skill_coin=${pkg.silkCoins}`,
+    }));
     setIsDialogOpen(true);
   };
 
@@ -168,64 +163,14 @@ const PackagesPage = () => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-
             <form
               action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
               method="POST"
             >
-              <input type="hidden" name="amount" value={formData.amount} />
-              <input
-                type="hidden"
-                name="tax_amount"
-                value={formData.tax_amount}
-              />
-              <input
-                type="hidden"
-                name="total_amount"
-                value={formData.total_amount}
-              />
-              <input
-                type="hidden"
-                name="transaction_uuid"
-                value={formData.transaction_uuid}
-              />
-              <input
-                type="hidden"
-                name="product_code"
-                value={formData.product_code}
-              />
-              <input
-                type="hidden"
-                name="product_service_charge"
-                value={formData.product_service_charge}
-              />
-              <input
-                type="hidden"
-                name="product_delivery_charge"
-                value={formData.product_delivery_charge}
-              />
-              <input
-                type="hidden"
-                name="success_url"
-                value={formData.success_url}
-              />
-              <input
-                type="hidden"
-                name="failure_url"
-                value={formData.failure_url}
-              />
-              <input
-                type="hidden"
-                name="signed_field_names"
-                value={formData.signed_field_names}
-              />
-              <input
-                type="hidden"
-                name="signature"
-                value={formData.signature}
-              />
-
-              <Button type="submit">Continue to Purchase</Button>
+              {Object.entries(formData).map(([key, value]) => (
+                <input key={key} type="hidden" name={key} value={value} />
+              ))}
+              <Button type="submit">Continue to Payment</Button>
             </form>
           </DialogFooter>
         </DialogContent>

@@ -13,9 +13,11 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { AuthContext } from "@/context/auth-context";
+import { useToast } from "@/hooks/use-toast";
 
 function Authpage() {
   const [activeTab, setActiveTab] = useState("signin");
+  const { toast } = useToast();
 
   const {
     signInFormData,
@@ -24,6 +26,8 @@ function Authpage() {
     setSignUpFormData,
     handleRegisterUser,
     handleLoginUser,
+    error,
+    loading,
   } = useContext(AuthContext);
 
   function handleTabChange(value) {
@@ -47,12 +51,67 @@ function Authpage() {
     );
   }
 
+  const enhancedHandleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!signInFormValidation()) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+      });
+      return;
+    }
+
+    try {
+      await handleLoginUser(e);
+      toast({
+        title: "Login Successful",
+        description: "You have been logged in successfully",
+        duration: 3000,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error || "Invalid email or password",
+      });
+    }
+  };
+
+  const enhancedHandleRegister = async (e) => {
+    e.preventDefault();
+
+    if (!signUpFormValidation()) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+      });
+      return;
+    }
+
+    try {
+      await handleRegisterUser(e);
+      toast({
+        title: "Registration Successful",
+        description: "Your account has been created successfully",
+      });
+      setActiveTab("signin"); // Switching to login tab after successful registration
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: error || "An error occurred during registration",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center border-b">
+      <header className="px-4 lg:px-6 h-14 flex items-center">
         <Link to={"/"} className="flex items-center justify-center">
-          <BookOpenText className="h-8 w-8 mr-4" />
-          <span className="font-extrabold text-xl">SkillSwap</span>
+          <img src="/Oglogo.png" alt="SkillSwap Logo" className="h-12 mt-5" />
         </Link>
       </header>
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -81,7 +140,7 @@ function Authpage() {
                   formData={signInFormData}
                   setFormData={setSignInFormData}
                   isButtonDisabled={!signInFormValidation()}
-                  handleSubmit={handleLoginUser}
+                  handleSubmit={enhancedHandleLogin}
                 />
               </CardContent>
             </Card>
@@ -101,7 +160,7 @@ function Authpage() {
                   formData={signUpFormData}
                   setFormData={setSignUpFormData}
                   isButtonDisabled={!signUpFormValidation()}
-                  handleSubmit={handleRegisterUser}
+                  handleSubmit={enhancedHandleRegister}
                 />
               </CardContent>
             </Card>
